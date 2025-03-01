@@ -1,114 +1,313 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<head> <meta charset="utf-8"> <title>Sir Tim Berners-Lee</title> <link rel="stylesheet" href="style.css"> <link href="https://fonts.googleapis.com/css?family=Cinzel+Decorative&display=swap" rel="stylesheet"> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> </head>
-<!DOCTYPE html> <html> <head> <title>Blog</title> <meta name="viewport" content="width=device-width, initial-scale=1"> <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css"> <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script> <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script> <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <link rel="stylesheet" href="style.css"> </head>
-
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tic Tac Toe</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&family=Poppins:wght@300;500&display=swap" rel="stylesheet" />
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+  <style>
+    /* Base Styles */
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+    body { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: #fff; min-height: 100vh; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+    /* Main Menu Styles */
+    .main-menu { text-align: center; padding: 2rem; }
+    .game-title { font-family: 'Orbitron', sans-serif; font-size: 3.5rem; background: linear-gradient(45deg, #ffd700, #00ff87); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 2rem; }
+    .mode-btn { background: rgba(255, 215, 0, 0.1); border: 2px solid #ffd700; color: #ffd700; padding: 1rem 2rem; margin: 1rem; border-radius: 15px; font-size: 1.2rem; cursor: pointer; transition: all 0.3s ease; }
+    .mode-btn:hover { background: #ffd700; color: #16213e; transform: scale(1.05); }
+    /* Game Board Styles */
+    .game-container { display: none; flex-direction: column; align-items: center; }
+    .board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; background: rgba(0, 255, 135, 0.1); padding: 20px; border-radius: 20px; border: 2px solid #00ff87; }
+    .cell { width: 100px; height: 100px; background: rgba(23, 42, 58, 0.8); border: 2px solid #00ff87; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 3rem; cursor: pointer; transition: all 0.3s ease; }
+    .cell:hover { background: rgba(0, 255, 135, 0.2); }
+    /* Animation for Cell Updates */
+    .cell.animate { animation: popIn 0.3s ease-out; }
+    @keyframes popIn {
+      0% { transform: scale(0.5); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    /* Online Section Styles */
+    .online-section { display: none; flex-direction: column; align-items: center; margin-top: 2rem; }
+    .room-input { background: rgba(0, 136, 255, 0.1); border: 2px solid #0088ff; color: #fff; padding: 0.8rem; border-radius: 10px; margin: 1rem; width: 300px; }
+    /* Status Message */
+    .status { font-size: 1.5rem; margin: 1rem 0; color: #ffd700; }
+  </style>
+</head>
 <body>
-<!--
-ADD CENTER TAG
---><center>
-    
-
-
-    </center>
-    <br>
-    <br>
-    <nav class="navbar-inverse" style="position:sticky;top:0;z-index:99999">
-        <div class="navbar-header"> 
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-                <span class="icon-bar"></span>
-                <span class="icon-bar">
-                </span>
-                <span class="icon-bar"></span>
-            </button> 
-            <a class="navbar-brand" href="#">
-            NAVGATION BAR</a> </div> 
-        <div class="collapse navbar-collapse" id="myNavbar"> 
-            <ul class="nav navbar-nav"> 
-                <li><a href="#welcome">WELCOME</a> </li>
-                <li><a href="#videos">VIDEOS</a> </li>
-                <li><a href="#work">WORK </a> </li>
-                <li><a href="#writings">WRITINGS </a> </li>
-                <li><a href="#contact">CONTACT </a> </li>
-            </ul>
-        </div>
-        
-        
-    </nav>
-    
-    <section id="welcome" style="top: 0px;">
-        <div class="parallax-inner">
-            <img src="stbl.jpg" class="profile" />
-            <h1>I Am <br><span id="name">Tim Berners-Lee</span></h1>
-            <h2> I am the founder of www: World Wide Web</h2>
-        </div>
-
-    </section>
-
-
-    <section id="bio">
-        <h1>Hi!</h1>
-        <div class="line"></div>
-        <p>Tim Berners-Lee is a software engineer who invented the Internet (or the World Wide Web) in 1989 while at CERN, the European Particle Physics Laboratory.
-
-            He is director of the World Wide Web Consortium that he founded and a Professor in the Computer Science Department at the University of Oxford.
-
-            In 2001 he became a Fellow of the Royal Society and in 2004 he was knighted.<br><br>In 1994 Berners-Lee founded the World Wide Web Consortium (W3C) at the Laboratory of Computer Science (LCS) at the Massachusetts Institute of Technology in Boston. It was made up of companies that wanted to work together to create Web standards and also improve the Web. It was quickly agreed that the technology should be free of royalties and patents. Berners-Lee has served as director of this W3C since it was founded.
-
-            In 1995 Microsoft produced the first version of Internet Explorer and this commercial browser created enormous growth in websites and web users.
-
-            The Web was first used for e-commerce in 1997.</p>
-    </section>
-
-    <section id="videos">
-        <h1>Videos</h1>
-        <div class="line"></div>
-        <br>
-        <iframe width="1000" height="500" src="https://www.youtube.com/embed/OM6XIICm_qo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        <br>
-        <br>
-        <iframe width="1000" height="500" src="https://www.youtube.com/embed/J8hzJxb0rpc" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-    </section>
-    <section id="work">
-        <h1>WORK</h1>
-        <div class="line"></div>
-        <iframe width="1500" height="1000" src="https://en.wikipedia.org/wiki/Tim_Berners-Lee#Career_and_research" frameborder="0"></iframe>
-
-    </section>
-    <section id="writings">
-        <h1>WRITINGS</h1>
-        <div class="line"></div>
-        <a class="article" href="https://webfoundation.org/2019/03/web-birthday-30" target="_blank">30 years on, what’s next ForTheWeb?</a>
-        <br>
-        <a class="article" href="https://interestingengineering.com/how-did-tim-berners-lee-change-the-world-with-the-world-wide-web" target="_blank">How Did Tim Berners-Lee Change the World With the World Wide Web?</a>
-    </section>
-<br>
-<section id="contact">
-   <!--iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3769.588464315904!2d72.88846041490193!3d19.125701687059447!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3be7c97f346053b7%3A0xacf72f56793d190a!2sWhitehat%20Education%20Technology%20Pvt.%20Ltd.!5e0!3m2!1sen!2sin!4v1618054792784!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe-->
-    <div class="contact_1">
-        <a href="mailto:someone@example.com?Subject=Hello">
-        <i class="fa fa-envelope"></i>
-           &nbsp;&nbsp;
-            <h3>
-                shreyashbk10@gmail.com
-            </h3>
-        </a>
-        <br>
-        <br>
-        <a href="#">
-            <!--i class="fa fa-instagram"-->
-            </i>
-            
-            <h3></h3>
-        </a>
+  <div class="container">
+    <!-- Main Menu -->
+    <div class="main-menu" id="mainMenu">
+      <h1 class="game-title">TIC TAC TOE ARENA</h1>
+      <button class="mode-btn" onclick="showGameMode('single')">Single Player</button>
+      <button class="mode-btn" onclick="showGameMode('multi')">Local Multiplayer</button>
+      <button class="mode-btn" onclick="showOnlineSection()">Online Play</button>
     </div>
-    
-    </section>
-    <p style="font-style: italic; font-size: 1cm;" >I am a new and young webpage editor please support for more.</p>
-<!--
-ADD CONTACT SECTION HERE
--->
+    <!-- Game Container -->
+    <div class="game-container" id="gameContainer">
+      <div class="board" id="board"></div>
+      <div class="status" id="status"></div>
+      <button class="mode-btn" onclick="returnToMenu()">Main Menu</button>
+    </div>
+    <!-- Online Section -->
+    <div class="online-section" id="onlineSection">
+      <input type="text" class="room-input" id="roomId" placeholder="Enter Room ID">
+      <button class="mode-btn" onclick="createRoom()">Create Room</button>
+      <button class="mode-btn" onclick="joinRoom()">Join Room</button>
+      <button class="mode-btn" onclick="returnToMenu()">Main Menu</button>
+    </div>
+  </div>
 
-</body></html>
+  <script>
+    // Firebase Configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyAD5aPU2-DTdc4Ft-fUvOmZ6CnHFq9Vml0",
+      authDomain: "tik-tak-teo-a588d.firebaseapp.com",
+      databaseURL: "https://tik-tak-teo-a588d-default-rtdb.firebaseio.com",
+      projectId: "tik-tak-teo-a588d",
+      storageBucket: "tik-tak-teo-a588d.firebasestorage.app",
+      messagingSenderId: "745877477913",
+      appId: "1:745877477913:web:216282dc0136fb80b96888",
+      measurementId: "G-JETSJPKQ11"
+    };
+
+    // Initialize Firebase if not already initialized.
+    if (!firebase.apps.length) {
+      firebase.initializeApp(firebaseConfig);
+      console.log("Firebase initialized.");
+    } else {
+      firebase.app();
+    }
+    const database = firebase.database();
+
+    // Game State Variables
+    let currentPlayer = 'X';  // Player identity (X or O)
+    let gameMode = ''; // 'single', 'multi', or 'online'
+    let roomRef = null; // Firebase reference for online room
+    let onlineCurrentPlayer = null;  // Tracks current turn from Firebase
+
+    // Initialize Game Board
+    function initializeBoard() {
+      const board = document.getElementById('board');
+      board.innerHTML = '';
+      for (let i = 0; i < 9; i++) {
+        const cell = document.createElement('div');
+        cell.className = 'cell';
+        cell.setAttribute('data-index', i);
+        cell.addEventListener('click', () => handleCellClick(i));
+        board.appendChild(cell);
+      }
+    }
+
+    // Display a Specific Game Mode
+    function showGameMode(mode) {
+      gameMode = mode;
+      document.getElementById('mainMenu').style.display = 'none';
+      document.getElementById('gameContainer').style.display = 'flex';
+      document.getElementById('onlineSection').style.display = 'none';
+      initializeBoard();
+      currentPlayer = 'X';
+      updateStatus(`Player ${currentPlayer}'s turn`);
+    }
+
+    // Show the Online Play Section
+    function showOnlineSection() {
+      document.getElementById('mainMenu').style.display = 'none';
+      document.getElementById('onlineSection').style.display = 'flex';
+      document.getElementById('gameContainer').style.display = 'none';
+    }
+
+    // Create an Online Room
+    function createRoom() {
+      const roomId = Math.random().toString(36).substring(2, 8);
+      console.log("Attempting to create room with ID:", roomId);
+      roomRef = database.ref('rooms/' + roomId);
+      roomRef.set({
+        player1: 'X',
+        player2: null,
+        board: Array(9).fill(null),
+        currentPlayer: 'X'
+      }).then(() => {
+        console.log("Room created successfully with ID:", roomId);
+        alert("Room created! Your room ID is: " + roomId + "\nShare this ID with your opponent.");
+        startOnlineGame(roomId, 'X');
+      }).catch((error) => {
+        console.error("Room creation failed:", error);
+        alert("Room creation failed: " + error);
+      });
+    }
+
+    // Join an Online Room
+    function joinRoom() {
+      const roomId = document.getElementById('roomId').value.trim();
+      if (!roomId) {
+        alert("Please enter a room ID.");
+        return;
+      }
+      roomRef = database.ref('rooms/' + roomId);
+      roomRef.once('value').then(snapshot => {
+        if (snapshot.exists()) {
+          roomRef.update({ player2: 'O' });
+          startOnlineGame(roomId, 'O');
+        } else {
+          alert("Room does not exist!");
+        }
+      }).catch(error => {
+        console.error("Error joining room:", error);
+        alert("Error joining room: " + error);
+      });
+    }
+
+    // Start the Online Game
+    function startOnlineGame(roomId, player) {
+      document.getElementById('onlineSection').style.display = 'none';
+      document.getElementById('gameContainer').style.display = 'flex';
+      gameMode = 'online';
+      currentPlayer = player;
+      // Initialize the online current turn so that the first move is allowed.
+      onlineCurrentPlayer = player;
+      initializeBoard();
+      setupOnlineListeners();
+    }
+
+    // Handle a Cell Click
+    function handleCellClick(index) {
+      const cell = document.querySelectorAll('.cell')[index];
+      if (cell.textContent || checkWinner()) return;
+      if (gameMode === 'online') {
+        // In online mode, only allow move if it's your turn according to Firebase.
+        if (currentPlayer === getCurrentOnlinePlayer()) {
+          makeOnlineMove(index);
+        } else {
+          console.log("Not your turn yet.");
+        }
+      } else {
+        // For local and single-player modes.
+        cell.textContent = currentPlayer;
+        cell.style.color = currentPlayer === 'X' ? '#00ff87' : '#0088ff';
+        cell.classList.add('animate');
+        setTimeout(() => cell.classList.remove('animate'), 300);
+        const winner = checkWinner();
+        if (winner) {
+          updateStatus(`Player ${winner} wins!`);
+          return;
+        } else if (isBoardFull()) {
+          updateStatus("It's a draw!");
+          return;
+        }
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        updateStatus(`Player ${currentPlayer}'s turn`);
+        if (gameMode === 'single' && currentPlayer === 'O') {
+          setTimeout(computerMove, 500);
+        }
+      }
+    }
+
+    // Simple Computer Move for Single Player Mode
+    function computerMove() {
+      const emptyCells = Array.from(document.querySelectorAll('.cell'))
+        .map((cell, index) => ({ cell, index }))
+        .filter(item => !item.cell.textContent);
+      if (emptyCells.length > 0) {
+        const randomIndex = Math.floor(Math.random() * emptyCells.length);
+        handleCellClick(emptyCells[randomIndex].index);
+      }
+    }
+
+    // Check for a Winning Combination
+    function checkWinner() {
+      const winPatterns = [
+        [0, 1, 2], [3, 4, 5], [6, 7, 8],
+        [0, 3, 6], [1, 4, 7], [2, 5, 8],
+        [0, 4, 8], [2, 4, 6]
+      ];
+      const cells = document.querySelectorAll('.cell');
+      for (let pattern of winPatterns) {
+        const [a, b, c] = pattern;
+        if (cells[a].textContent &&
+            cells[a].textContent === cells[b].textContent &&
+            cells[a].textContent === cells[c].textContent) {
+          return cells[a].textContent;
+        }
+      }
+      return null;
+    }
+
+    // Check if the Board is Full
+    function isBoardFull() {
+      return Array.from(document.querySelectorAll('.cell')).every(cell => cell.textContent);
+    }
+
+    // Update the Status Message
+    function updateStatus(message) {
+      document.getElementById('status').textContent = message;
+    }
+
+    // Return to Main Menu and Clean Up Listeners
+    function returnToMenu() {
+      document.getElementById('mainMenu').style.display = 'block';
+      document.getElementById('gameContainer').style.display = 'none';
+      document.getElementById('onlineSection').style.display = 'none';
+      if (roomRef) roomRef.off();
+    }
+
+    // Set Up Firebase Listener for Online Game Updates
+    function setupOnlineListeners() {
+      roomRef.on('value', snapshot => {
+        const gameState = snapshot.val();
+        if (!gameState) return;
+        onlineCurrentPlayer = gameState.currentPlayer;
+        document.querySelectorAll('.cell').forEach((cell, index) => {
+          let newSymbol = gameState.board[index] || '';
+          if (cell.textContent !== newSymbol) {
+            cell.textContent = newSymbol;
+            if (newSymbol) {
+              cell.classList.add('animate');
+              setTimeout(() => cell.classList.remove('animate'), 300);
+            }
+            if (newSymbol === 'X') {
+              cell.style.color = '#00ff87';
+            } else if (newSymbol === 'O') {
+              cell.style.color = '#0088ff';
+            }
+          }
+        });
+        const winner = checkWinner();
+        if (winner) {
+          updateStatus(`Player ${winner} wins!`);
+        } else if (isBoardFull()) {
+          updateStatus("It's a draw!");
+        } else {
+          updateStatus(onlineCurrentPlayer === currentPlayer ? "Your turn!" : "Waiting for opponent...");
+        }
+      });
+    }
+
+    // Make an Online Move via Firebase Transaction
+    function makeOnlineMove(index) {
+      roomRef.transaction(gameState => {
+        if (!gameState) return gameState;
+        if (gameState.board[index] === null && gameState.currentPlayer === currentPlayer) {
+          gameState.board[index] = currentPlayer;
+          gameState.currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+        }
+        return gameState;
+      }, (error, committed, snapshot) => {
+        if (error) {
+          console.error("Transaction failed:", error);
+        } else if (!committed) {
+          console.log("Transaction not committed.");
+        } else {
+          console.log("Transaction committed. New game state:", snapshot.val());
+        }
+      });
+    }
+
+    // Return the Current Online Turn
+    function getCurrentOnlinePlayer() {
+      return onlineCurrentPlayer;
+    }
+  </script>
+</body>
+</html>
